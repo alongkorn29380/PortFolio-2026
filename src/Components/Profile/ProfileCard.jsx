@@ -1,6 +1,7 @@
 import { useRef, useMemo, useCallback, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { RigidBody, useSpringJoint } from '@react-three/rapier'
+import { RigidBodyType } from '@dimforge/rapier3d-compat'
 import * as THREE from 'three'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 
@@ -8,6 +9,7 @@ const CARD_W = 2.0
 const CARD_H = 2.8
 const CARD_D = 0.18
 const ANCHOR_POS = new THREE.Vector3(2.5, 4, 0)
+const ANCHOR_ARR = [2.5, 4, 0]
 const DRAG_PLANE = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0)
 
 function makeFrontTexture() {
@@ -126,13 +128,27 @@ export default function ProfileCard() {
   const dragOffset  = useRef(new THREE.Vector3())
   const lastHit     = useRef(new THREE.Vector3())
   const prevHit     = useRef(new THREE.Vector3())
+  const lastDelta   = useRef(1 / 60)
   const { gl } = useThree()
 
   const cardGeom     = useMemo(() => new RoundedBoxGeometry(CARD_W, CARD_H, CARD_D, 4, 0.08), [])
   const frontTexture = useMemo(() => makeFrontTexture(), [])
   const backTexture  = useMemo(() => makeBackTexture(), [])
+  const initialBandGeom = useMemo(() => {
+    const curve = new THREE.QuadraticBezierCurve3(
+      ANCHOR_POS,
+      new THREE.Vector3(ANCHOR_POS.x, 2.5, 0),
+      new THREE.Vector3(ANCHOR_POS.x, 0.5 + CARD_H / 2, 0)
+    )
+    return new THREE.TubeGeometry(curve, 24, 0.02, 8, false)
+  }, [])
 
-  useEffect(() => () => { frontTexture.dispose(); backTexture.dispose() }, [frontTexture, backTexture])
+  useEffect(() => () => {
+    frontTexture.dispose()
+    backTexture.dispose()
+    cardGeom.dispose()
+    initialBandGeom.dispose()
+  }, [frontTexture, backTexture, cardGeom, initialBandGeom])
 
   // Spring joint: anchor → card top
   useSpringJoint(anchorRef, cardRef, [
@@ -143,10 +159,12 @@ export default function ProfileCard() {
     4,                  // damping
   ])
 
+  const handlePointerEnter = useCallback(() => { gl.domElement.style.cursor = 'grab' }, [gl])
+
   const handlePointerDown = useCallback((e) => {
     e.stopPropagation()
     isDragging.current = true
-    cardRef.current.setBodyType(2) // KinematicPositionBased
+    cardRef.current.setBodyType(RigidBodyType.KinematicPositionBased, true)
     const hit = new THREE.Vector3()
     e.ray.intersectPlane(DRAG_PLANE, hit)
     const t = cardRef.current.translation()
@@ -157,25 +175,25 @@ export default function ProfileCard() {
   const handlePointerUp = useCallback(() => {
     if (!isDragging.current) return
     isDragging.current = false
-    // Compute throw velocity from last two drag positions (scaled by 60fps)
-    const vx = (lastHit.current.x - prevHit.current.x) * 60
-    const vy = (lastHit.current.y - prevHit.current.y) * 60
-    cardRef.current.setBodyType(0) // Dynamic
+    const dt = lastDelta.current || 1 / 60
+    const vx = (lastHit.current.x - prevHit.current.x) / dt
+    const vy = (lastHit.current.y - prevHit.current.y) / dt
+    cardRef.current.setBodyType(RigidBodyType.Dynamic, true)
     cardRef.current.setLinvel({ x: vx, y: vy, z: 0 }, true)
     gl.domElement.style.cursor = 'grab'
   }, [gl])
 
   useEffect(() => {
-    if (!bandRef.current) return
-    const curve = new THREE.QuadraticBezierCurve3(
-      ANCHOR_POS,
-      new THREE.Vector3(ANCHOR_POS.x, 2.5, 0),
-      new THREE.Vector3(ANCHOR_POS.x, 0.5 + CARD_H / 2, 0)
-    )
-    bandRef.current.geometry = new THREE.TubeGeometry(curve, 24, 0.02, 8, false)
-  }, [])
+    const el = gl.domElement
+    el.addEventListener('pointerup', handlePointerUp)
+    return () => el.removeEventListener('pointerup', handlePointerUp)
+  }, [gl, handlePointerUp])
 
-  useFrame(({ pointer, camera, raycaster }) => {
+  useEffect(() => {
+    return () => { gl.domElement.style.cursor = '' }
+  }, [gl])
+
+  useFrame(({ pointer, camera, raycaster }, delta) => {
     if (isDragging.current && cardRef.current) {
       raycaster.setFromCamera(pointer, camera)
       const hit = new THREE.Vector3()
@@ -187,6 +205,7 @@ export default function ProfileCard() {
         y: hit.y + dragOffset.current.y,
         z: 0,
       })
+      lastDelta.current = delta
     }
 
     if (cardRef.current && bandRef.current) {
@@ -210,13 +229,13 @@ export default function ProfileCard() {
   return (
     <>
       {/* Ceiling hook */}
-      <mesh position={ANCHOR_POS.toArray()}>
+      <mesh position={ANCHOR_ARR}>
         <cylinderGeometry args={[0.05, 0.05, 0.08, 16]} />
         <meshStandardMaterial color="#aaa" metalness={0.95} roughness={0.05} />
       </mesh>
 
       {/* Fixed anchor RigidBody */}
-      <RigidBody ref={anchorRef} type="fixed" position={ANCHOR_POS.toArray()}>
+      <RigidBody ref={anchorRef} type="fixed" position={ANCHOR_ARR}>
         <mesh visible={false}>
           <sphereGeometry args={[0.01]} />
           <meshBasicMaterial />
@@ -224,7 +243,7 @@ export default function ProfileCard() {
       </RigidBody>
 
       {/* Band mesh */}
-      <mesh ref={bandRef}>
+      <mesh ref={bandRef} geometry={initialBandGeom}>
         <meshStandardMaterial color="#222" roughness={0.5} metalness={0.1} />
       </mesh>
 
@@ -243,9 +262,7 @@ export default function ProfileCard() {
           geometry={cardGeom}
           castShadow
           onPointerDown={handlePointerDown}
-          onPointerUp={handlePointerUp}
-          onPointerLeave={handlePointerUp}
-          onPointerEnter={() => { gl.domElement.style.cursor = 'grab' }}
+          onPointerEnter={handlePointerEnter}
         >
           {[0,1,2,3,4,5].map(i => (
             <meshStandardMaterial
