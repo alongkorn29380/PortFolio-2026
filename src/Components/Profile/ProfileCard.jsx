@@ -1,10 +1,10 @@
-import { useRef, useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import * as THREE from 'three'
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js'
 
 const CARD_W = 2.0
 const CARD_H = 2.8
-const CARD_D = 0.06
+const CARD_D = 0.18
 
 function makeFrontTexture() {
   const W = 512, H = 720
@@ -119,16 +119,27 @@ export default function ProfileCard() {
   const frontTexture = useMemo(() => makeFrontTexture(), [])
   const backTexture  = useMemo(() => makeBackTexture(),  [])
 
+  useEffect(() => () => { frontTexture.dispose(); backTexture.dispose() }, [frontTexture, backTexture])
+
   return (
     <group position={[2.5, 0.5, 0]}>
       {/* Card body */}
       <mesh geometry={cardGeom} castShadow>
-        <meshStandardMaterial map={frontTexture} roughness={0.15} metalness={0.1} />
+        {[0,1,2,3,4,5].map(i => (
+          <meshStandardMaterial
+            key={i}
+            attach={`material-${i}`}
+            map={i === 4 ? frontTexture : null}
+            color={i === 4 ? undefined : '#0d1b2a'}
+            roughness={0.15}
+            metalness={0.1}
+          />
+        ))}
       </mesh>
 
       {/* Back face overlay */}
       <mesh position={[0, 0, -CARD_D / 2 - 0.001]} rotation={[0, Math.PI, 0]}>
-        <planeGeometry args={[CARD_W, CARD_H]} />
+        <planeGeometry args={[CARD_W - 0.06, CARD_H - 0.06]} />
         <meshStandardMaterial map={backTexture} roughness={0.3} />
       </mesh>
 
