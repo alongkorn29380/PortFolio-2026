@@ -1,0 +1,14 @@
+:root {
+  --bg: #0b0a09;
+  --line: #1c1a18;
+  --grid: 48px;
+}
+
+body {
+  min-height: 100dvh;
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: var(--grid) var(--grid);
+}
