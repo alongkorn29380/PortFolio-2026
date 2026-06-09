@@ -1,19 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Skill(code-review)",
-      "Skill(code-review:*)",
-      "Bash(node -e \"const pkg = require\\('./node_modules/@react-three/fiber/package.json'\\); console.log\\(pkg.version, pkg.peerDependencies\\)\")",
-      "Bash(node -e \"const pkg = require\\('./node_modules/r3f-perf/package.json'\\); console.log\\(pkg.version, JSON.stringify\\(pkg.peerDependencies\\)\\)\")",
-      "Bash(node -e \"const pkg = require\\('./node_modules/r3f-perf/package.json'\\); console.log\\(JSON.stringify\\(pkg.exports, null, 2\\)\\)\")",
-      "Bash(node -e \"const pkg = require\\('./node_modules/@react-three/fiber/package.json'\\); console.log\\(JSON.stringify\\(pkg.exports ? Object.keys\\(pkg.exports\\) : 'no exports field', null, 2\\)\\)\")",
-      "Bash(node -e \"const pkg = require\\('./node_modules/@react-three/fiber/package.json'\\); console.log\\(pkg.main, pkg.module, pkg.version\\)\")",
-      "Bash(node -e \"const src = require\\('fs'\\).readFileSync\\('./node_modules/r3f-perf/dist/index.mjs', 'utf8'\\); const lines = src.split\\('\\\\n'\\).slice\\(0, 30\\); console.log\\(lines.join\\('\\\\n'\\)\\)\")",
-      "Bash(node -e \"const src = require\\('fs'\\).readFileSync\\('./node_modules/r3f-perf/dist/components/Perf.mjs', 'utf8'\\); const lines = src.split\\('\\\\n'\\).slice\\(0, 60\\); console.log\\(lines.join\\('\\\\n'\\)\\)\")",
-      "Bash(node -e \"const src = require\\('fs'\\).readFileSync\\('./node_modules/r3f-perf/dist/components/PerfHeadless.mjs', 'utf8'\\); console.log\\(src.split\\('\\\\n'\\).slice\\(0,40\\).join\\('\\\\n'\\)\\)\")",
-      "Bash(node -e \"const src = require\\('fs'\\).readFileSync\\('./node_modules/r3f-perf/dist/components/HtmlMinimal.mjs', 'utf8'\\); console.log\\(src.split\\('\\\\n'\\).slice\\(0,30\\).join\\('\\\\n'\\)\\)\")",
-      "Bash(node -e \"const src = require\\('fs'\\).readFileSync\\('./node_modules/@react-three/fiber/dist/react-three-fiber.esm.js', 'utf8'\\); const idx = src.indexOf\\('Canvas'\\); console.log\\(src.substring\\(idx, idx+300\\)\\)\")",
-      "Bash(node -e ' *)"
+      "Bash(Get-Content \"c:/Users/along/OneDrive/เดสก์ท็อป/portfolio_2026/src/index.jsx\")",
+      "Read(//c/Users/along/OneDrive/**)"
     ]
   }
 }

@@ -2,7 +2,9 @@ nav {
     background: #333;
     overflow: hidden;
     position: relative;
+    z-index: 100;
     border-radius: 40px;
+    margin: 10px;
 
     & a {
         color: #fff;
