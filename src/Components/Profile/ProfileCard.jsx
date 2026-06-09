@@ -124,6 +124,8 @@ export default function ProfileCard() {
   const bandRef   = useRef()
   const isDragging  = useRef(false)
   const dragOffset  = useRef(new THREE.Vector3())
+  const lastHit     = useRef(new THREE.Vector3())
+  const prevHit     = useRef(new THREE.Vector3())
   const { gl } = useThree()
 
   const cardGeom     = useMemo(() => new RoundedBoxGeometry(CARD_W, CARD_H, CARD_D, 4, 0.08), [])
@@ -155,7 +157,11 @@ export default function ProfileCard() {
   const handlePointerUp = useCallback(() => {
     if (!isDragging.current) return
     isDragging.current = false
+    // Compute throw velocity from last two drag positions (scaled by 60fps)
+    const vx = (lastHit.current.x - prevHit.current.x) * 60
+    const vy = (lastHit.current.y - prevHit.current.y) * 60
     cardRef.current.setBodyType(0) // Dynamic
+    cardRef.current.setLinvel({ x: vx, y: vy, z: 0 }, true)
     gl.domElement.style.cursor = 'grab'
   }, [gl])
 
@@ -174,6 +180,8 @@ export default function ProfileCard() {
       raycaster.setFromCamera(pointer, camera)
       const hit = new THREE.Vector3()
       raycaster.ray.intersectPlane(DRAG_PLANE, hit)
+      prevHit.current.copy(lastHit.current)
+      lastHit.current.copy(hit)
       cardRef.current.setNextKinematicTranslation({
         x: hit.x + dragOffset.current.x,
         y: hit.y + dragOffset.current.y,
