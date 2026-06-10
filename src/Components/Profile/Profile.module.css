@@ -1,80 +1,120 @@
 .hero_wrapper {
-    position: fixed;
-    top: 80px;
-    left: 0;
+    position: relative;
     z-index: 2;
     pointer-events: none;
-    width: 50%;
-
-    & .container {
-        max-width: 580px;
-        margin: 0 auto;
-        padding: 0 32px;
-    }
-
-    & .hero_con {
-        display: flex;
-        flex-direction: column;
-        margin-top: 40px;
-
-        & .hero_info {
-
-            & .text_1 {
-                font-size: 20px;
-                color: var(--slate-400);
-            }
-
-            & .text_2 {
-                font-size: 52px;
-                font-weight: bold;
-                color: #fff;
-                line-height: 1.1;
-            }
-
-            & .text_3 {
-                font-size: 22px;
-                color: var(--cyan);
-                margin-top: 8px;
-            }
-
-            & .text_4 {
-                font-size: 14px;
-                margin-top: 20px;
-                color: var(--slate-400);
-                line-height: 1.6;
-                max-width: 480px;
-            }
-        }
-
-        & .hero_social {
-            display: flex;
-            list-style: none;
-            margin-top: 24px;
-            padding: 0;
-            pointer-events: auto;
-
-            & li {
-                margin-right: 20px;
-
-                & a {
-                    pointer-events: auto;
-                    & svg {
-                        width: 28px;
-                        height: 28px;
-                        color: var(--slate-400);
-                        transition: color 0.2s;
-                        &:hover { color: var(--cyan); }
-                    }
-                }
-            }
-        }
-    }
+    width: 55%;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    padding-top: 90px;
+    padding-left: 48px;
 }
 
+.hero_wrapper .container {
+    padding: 60px 48px 40px 48px; 
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    
+    /* จำกัดความกว้างไม่ให้ยืดเต็มจอจนเกินไป ให้ดูสวยงาม */
+    width: 100%;
+    max-width: 600px;
+}
+
+/* ── BorderGlow overrides ── */
+/* คลาสที่ใช้ครอบ BorderGlow */
+.badge_glow {
+    pointer-events: auto !important;
+    width: 100% !important;
+    padding: 32px 36px !important;
+}
+
+/* ── Typography & Content ── */
+.text_1 {
+    font-size: 20px;
+    color: var(--slate-400);
+    margin: 0;
+    letter-spacing: 0.06em;
+}
+
+.text_2 {
+    font-size: 60px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.05;
+    margin: 0;
+    letter-spacing: -0.02em;
+    text-shadow: 0 0 120px rgba(34, 211, 238, 0.1);
+}
+
+.text_3 {
+    font-size: 30px;
+    color: var(--cyan);
+    margin: 20px;
+    min-height: 1.5em;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+
+.text_3::before {
+    content: '> ';
+    opacity: 0.4;
+    font-family: monospace;
+}
+
+.text_4 {
+    font-size: 20px;
+    color: var(--slate-400);
+    line-height: 1.8;
+    margin: 0;
+}
+
+/* ── Action Row & Social ── */
+.action_row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px 20px;
+}
+
+.hero_social {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 14px;
+}
+
+.hero_social li a {
+    pointer-events: auto;
+    display: block;
+}
+
+.hero_social li a svg {
+    width: 34px;
+    height: 34px;
+    color: var(--slate-400);
+    transition: color 0.2s, transform 0.2s;
+    display: block;
+}
+
+.hero_social li a svg:hover {
+    color: #08bada;
+    transform: translateY(-2px);
+}
+
+/* ── Responsive ── */
 @media screen and (max-width: 768px) {
     .hero_wrapper {
-        width: 100%;
         position: relative;
-        top: 80px;
+        width: 100%;
+        height: auto;
+        align-items: flex-start;
     }
+
+    .hero_wrapper .container {
+        padding: 100px 24px 40px;
+    }
+
+    .text_2 { font-size: 40px; }
 }

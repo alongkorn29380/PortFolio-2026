@@ -5,6 +5,7 @@ import { Canvas } from '@react-three/fiber'
 import Experience from './Experience.jsx'
 import Navebar from './Components/Navebar/Navebar'
 import Profile from './Components/Profile/Profile.jsx'
+import Skills from './Components/Skills/Skills.jsx'
 import Card from './Components/Card/Card.jsx'
 
 const root = ReactDOM.createRoot(document.querySelector('#root'))
@@ -12,7 +13,8 @@ const root = ReactDOM.createRoot(document.querySelector('#root'))
 root.render(
     <>
         <Navebar />
-        <Profile />
+
+        {/* Fixed 3D card — right side, always on top of canvas */}
         <div style={{
             position: 'fixed',
             left: 0,
@@ -32,6 +34,18 @@ root.render(
                 lanyardWidth={1}
             />
         </div>
+
+        {/* Scrollable sections */}
+        <main style={{ position: 'relative', zIndex: 2 }}>
+            <section id="home">
+                <Profile />
+            </section>
+            <section id="skills">
+                <Skills />
+            </section>
+        </main>
+
+        {/* Fixed grid background canvas */}
         <Canvas
             style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}
             gl={{ alpha: true }}

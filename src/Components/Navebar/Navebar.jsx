@@ -18,10 +18,10 @@ function Navebar() {
                     <a href="#">Alongkorn</a>
                 </div>
                 <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Skill</a></li>
-                    <li><a href="#">Portfolio</a></li>
-                    <li><a href="#">Contact</a></li>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#skills">Skills</a></li>
+                    <li><a href="#portfolio">Portfolio</a></li>
+                    <li><a href="#contact">Contact</a></li>
                 </ul>
                 <div className={styles.button}>
                     <a href="#">Hire Me</a>
@@ -33,10 +33,10 @@ function Navebar() {
             {isToggled ? (
                 <>
                     <ul className={styles.mobile_menu}>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Skill</a></li>
-                        <li><a href="#">Portfolio</a></li>
-                        <li><a href="#">Contact</a></li>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#skills">Skills</a></li>
+                        <li><a href="#portfolio">Portfolio</a></li>
+                        <li><a href="#contact">Contact</a></li>
                     </ul>
                     <div className={styles.mobile_button}>
                         <a href='#'>Hire Me</a>
