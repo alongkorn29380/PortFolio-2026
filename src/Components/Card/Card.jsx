@@ -4,8 +4,6 @@ import { useGLTF, useTexture, Environment, Lightformer } from '@react-three/drei
 import { BallCollider, CuboidCollider, Physics, RigidBody, useRopeJoint, useSphericalJoint } from '@react-three/rapier';
 import { MeshLineGeometry, MeshLineMaterial } from 'meshline';
 
-const CARD_GLB_URL = '/Models/card.glb';
-
 import * as THREE from 'three';
 import styles from './Card.module.css';
 
@@ -23,6 +21,28 @@ const BLANK_PIXEL =
 const FRONT_UV_RECT = { x: 0, y: 0, w: 0.5, h: 0.755 };
 const BACK_UV_RECT = { x: 0.5, y: 0, w: 0.5, h: 0.757 };
 
+// Reads #scroll-container's scrollTop each frame and smoothly pans the camera
+// upward so the card drifts off the top of the screen as the user scrolls down.
+function ScrollCamera({ scrollMultiplier = 8 }) {
+  const scrollRef = useRef(0)
+
+  useEffect(() => {
+    const sc = document.getElementById('scroll-container')
+    if (!sc) return
+    const onScroll = () => { scrollRef.current = sc.scrollTop }
+    sc.addEventListener('scroll', onScroll, { passive: true })
+    return () => sc.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useFrame(({ camera }) => {
+    const progress = scrollRef.current / (window.innerHeight || 900)
+    const targetY = -progress * scrollMultiplier
+    camera.position.y += (targetY - camera.position.y) * 0.08
+  })
+
+  return null
+}
+
 export default function Card({
   position = [0, 0, 30],
   gravity = [0, -40, 0],
@@ -35,6 +55,7 @@ export default function Card({
   lanyardWidth = 1
 }) {
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768);
+  const wrapperRef = useRef(null)
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -42,14 +63,44 @@ export default function Card({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Directly set pointer-events on the wrapper DOM node — no re-render lag.
+  // When the card drifts off-screen the canvas overlay must stop eating mouse events
+  // so the keyboard canvas below can receive hover/click.
+  useEffect(() => {
+    const sc = document.getElementById('scroll-container')
+    const wrapper = wrapperRef.current
+    if (!sc || !wrapper) return
+    const onScroll = () => {
+      const val = sc.scrollTop < window.innerHeight * 0.3 ? 'auto' : 'none'
+      if (wrapper.style.pointerEvents !== val) {
+        console.log('[Card] scrollTop:', Math.round(sc.scrollTop), '→ pointer-events:', val)
+        wrapper.style.pointerEvents = val
+      }
+    }
+    sc.addEventListener('scroll', onScroll, { passive: true })
+    onScroll() // apply correct initial value
+    console.log('[Card] scroll listener attached. initial PE:', wrapper.style.pointerEvents)
+    return () => sc.removeEventListener('scroll', onScroll)
+  }, []);
+
+  const forwardScroll = (e) => {
+    const sc = document.getElementById('scroll-container')
+    if (sc) sc.scrollTop += e.deltaY
+  }
+
   return (
-    <div className={styles['lanyard-wrapper']}>
+    <div
+      ref={wrapperRef}
+      className={styles['lanyard-wrapper']}
+      onWheel={forwardScroll}
+    >
       <Canvas
         camera={{ position: position, fov: fov }}
         dpr={[1, isMobile ? 1.5 : 3]}
         gl={{ alpha: transparent }}
         onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 2)}
       >
+        <ScrollCamera />
         <ambientLight intensity={Math.PI} />
         <Physics gravity={gravity} timeStep={isMobile ? 1 / 30 : 1 / 60}>
           <Band
@@ -116,7 +167,7 @@ function Band({
     rot = new THREE.Vector3(),
     dir = new THREE.Vector3();
   const segmentProps = { type: 'dynamic', canSleep: true, colliders: false, angularDamping: 4, linearDamping: 4 };
-  const { nodes, materials } = useGLTF(CARD_GLB_URL);
+  const { nodes, materials } = useGLTF('/Models/card.glb');
   const texture = useTexture(lanyardImage || BLANK_PIXEL);
   // useTexture must be called unconditionally; use a blank pixel when an image
   // isn't supplied for a given face, then skip compositing it below.

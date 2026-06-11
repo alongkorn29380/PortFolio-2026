@@ -1,29 +1,23 @@
 import './style.css'
 import ReactDOM from 'react-dom/client'
+import { createPortal } from 'react-dom'
 import { Canvas } from '@react-three/fiber'
 
 import Experience from './Experience.jsx'
 import Navebar from './Components/Navebar/Navebar'
 import Profile from './Components/Profile/Profile.jsx'
-import Skills from './Components/Skills/Skills.jsx'
 import Card from './Components/Card/Card.jsx'
+import { SkillsSection } from './Components/Keyboard/Skillssection.jsx'
 
 const root = ReactDOM.createRoot(document.querySelector('#root'))
 
 root.render(
     <>
+        {/* Navbar — fixed so it stays above the scroll container */}
         <Navebar />
 
-        {/* Fixed 3D card — right side, always on top of canvas */}
-        <div style={{
-            position: 'fixed',
-            left: 0,
-            top: 0,
-            width: '100%',
-            height: '100vh',
-            zIndex: 1,
-            pointerEvents: 'none',
-        }}>
+        {/* Card portaled to body — body never scrolls so position:fixed is viewport-guaranteed */}
+        {createPortal(
             <Card
                 position={[0, 0, 22]}
                 gravity={[0, -40, 0]}
@@ -32,22 +26,22 @@ root.render(
                 imageFit="cover"
                 lanyardImage="/Card/band.png"
                 lanyardWidth={1}
-            />
-        </div>
+            />,
+            document.body
+        )}
 
-        {/* Scrollable sections */}
-        <main style={{ position: 'relative', zIndex: 2 }}>
+        {/* Scroll container — body is overflow:hidden so only this div scrolls */}
+        <div id="scroll-container">
             <section id="home">
                 <Profile />
             </section>
-            <section id="skills">
-                <Skills />
-            </section>
-        </main>
+            <SkillsSection />
+        </div>
 
         {/* Fixed grid background canvas */}
         <Canvas
-            style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}
+            // เพิ่ม pointerEvents: 'none' เข้าไปในสไตล์ของ Canvas ตัวล่างสุด
+            style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0, pointerEvents: 'none' }}
             gl={{ alpha: true }}
             camera={{
                 fov: 45,
