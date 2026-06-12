@@ -67,7 +67,9 @@ export default function Card({
     const wrapper = wrapperRef.current
     if (!wrapper) return
     const update = () => {
-      wrapper.style.pointerEvents = window.scrollY < window.innerHeight * 0.5 ? 'auto' : 'none'
+      const atHome = window.scrollY < window.innerHeight * 0.5
+      wrapper.style.pointerEvents = atHome ? 'auto' : 'none'
+      wrapper.style.opacity = atHome ? '1' : '0'
     }
     window.addEventListener('scroll', update, { passive: true })
     update()

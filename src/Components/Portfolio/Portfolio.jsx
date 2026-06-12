@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react'
 import { createPortal } from 'react-dom'
+import { Link } from 'react-router-dom'
 import styles from './Portfolio.module.css'
 
 const projects = [
-    { id: 1, title: 'Clendear',         desc: 'ปฏิทินสำหรับการชดบันทึกประจำวัน',                   img: '/Images/Project/Calendar.png',         details: '#' },
-    { id: 2, title: 'Sensor Dashboard', desc: 'เซนเซอร์วัดคุณภาพอากาศ',                            img: '/Images/Project/Sensor_Dashboard.png', details: '#' },
-    { id: 3, title: 'Christmas Card',   desc: 'การ์ดอวยพรวันคริสมาสและปีใหม่',                     img: '/Images/Project/Christmas.png',        details: '#' },
-    { id: 4, title: 'Arm Robotic',      desc: 'แขนหุ่นยนต์ช่วยหยิบจับตามความประสงค์ของผู้ใช้งาน', img: '/Images/Project/Arm_Robotic.jpg',      details: '#' },
-    { id: 5, title: 'Snow Globe',       desc: 'ลูกแก้วหิมะ Three.js',                              img: '/Images/Project/Snow_Globe.png',       details: '#' },
+    { id: 1, title: 'Clendear',                desc: 'ปฏิทินสำหรับการชดบันทึกประจำวัน',                   img: '/Images/Project/Calendar.png',          details: '/project/clendear' },
+    { id: 2, title: 'Sensor Dashboard',        desc: 'เซนเซอร์วัดคุณภาพอากาศ',                         img: '/Images/Project/Sensor_Dashboard.png',  details: '/project/sensor-dashboard' },
+    { id: 3, title: 'Christmas Card',          desc: 'การ์ดอวยพรวันคริสมาสและปีใหม่',                     img: '/Images/Project/Christmas.png',         details: '/project/christmas-card' },
+    { id: 4, title: 'Arm Robotic',             desc: 'แขนหุ่นยนต์ช่วยหยิบจับตามความประสงค์ของผู้ใช้งาน',     img: '/Images/Project/Arm_Robotic.jpg',       details: '/project/arm-robotic' },
+    { id: 5, title: 'Snow Globe',              desc: 'ลูกแก้วหิมะ Three.js',                           img: '/Images/Project/Snow_Globe.png',        details: '/project/snow-globe' },
+    { id: 6, title: 'Terrain Portfolio',       desc: 'Openworld Portfolio',                          img: '/Images/Project/Portfolio.png',        details: '/project/terrain-portfolio' },
 ]
 
 const certs = [
@@ -28,11 +30,9 @@ export default function Portfolio() {
     return (
         <section id="portfolio" className={styles.section}>
 
-            {/* Heading + tabs on the same row */}
+            <h2 className={styles.heading}>Portfolio Showcase</h2>
+
             <div className={styles.header}>
-                <div>
-                    <h2 className={styles.heading}>Portfolio Showcase</h2>
-                </div>
                 <div className={styles.tabs}>
                     <button
                         className={`${styles.tab} ${activeTab === 'project' ? styles.tabActive : ''}`}
@@ -61,7 +61,11 @@ export default function Portfolio() {
                                 <p className={styles.cardDesc}>{project.desc}</p>
                             </div>
                             <div className={styles.cardActions}>
-                                <a href={project.details} className={styles.btnDetails}>Details →</a>
+                                <Link
+                                    to={project.details}
+                                    className={styles.btnDetails}
+                                    onClick={() => sessionStorage.setItem('returnScroll', window.scrollY)}
+                                >Details →</Link>
                             </div>
                         </div>
                     ))
