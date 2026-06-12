@@ -22,7 +22,7 @@
   height: 100% !important;
   position: relative;
   z-index: 1;             
-  pointer-events: auto !important; 
+  pointer-events: none;
 }
 
 

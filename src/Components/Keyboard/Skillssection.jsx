@@ -31,18 +31,16 @@ export function SkillsSection() {
       return () => { io.disconnect(); cancelAnimationFrame(raf) }
     }
 
-    const sc = document.getElementById('scroll-container')
     const onScroll = () => {
       const el = trackRef.current
-      if (!el || !sc) return
+      if (!el) return
       const rect = el.getBoundingClientRect()
       const total = el.offsetHeight - window.innerHeight
       progress.current = total > 0 ? clamp(-rect.top, 0, total) / total : 0
     }
-    const target = sc || window
-    target.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('scroll', onScroll, { passive: true })
     onScroll()
-    return () => target.removeEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   return (

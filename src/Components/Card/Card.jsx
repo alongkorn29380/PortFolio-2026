@@ -21,17 +21,15 @@ const BLANK_PIXEL =
 const FRONT_UV_RECT = { x: 0, y: 0, w: 0.5, h: 0.755 };
 const BACK_UV_RECT = { x: 0.5, y: 0, w: 0.5, h: 0.757 };
 
-// Reads #scroll-container's scrollTop each frame and smoothly pans the camera
-// upward so the card drifts off the top of the screen as the user scrolls down.
+// Reads window.scrollY each frame and smoothly pans the camera upward so the
+// card drifts off the top of the screen as the user scrolls down.
 function ScrollCamera({ scrollMultiplier = 8 }) {
   const scrollRef = useRef(0)
 
   useEffect(() => {
-    const sc = document.getElementById('scroll-container')
-    if (!sc) return
-    const onScroll = () => { scrollRef.current = sc.scrollTop }
-    sc.addEventListener('scroll', onScroll, { passive: true })
-    return () => sc.removeEventListener('scroll', onScroll)
+    const onScroll = () => { scrollRef.current = window.scrollY }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   useFrame(({ camera }) => {
@@ -63,37 +61,21 @@ export default function Card({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Directly set pointer-events on the wrapper DOM node — no re-render lag.
-  // When the card drifts off-screen the canvas overlay must stop eating mouse events
-  // so the keyboard canvas below can receive hover/click.
+  // Disable card pointer-events when user scrolls past the home section so the
+  // fixed canvas never blocks Portfolio or other sections below.
   useEffect(() => {
-    const sc = document.getElementById('scroll-container')
     const wrapper = wrapperRef.current
-    if (!sc || !wrapper) return
-    const onScroll = () => {
-      const val = sc.scrollTop < window.innerHeight * 0.3 ? 'auto' : 'none'
-      if (wrapper.style.pointerEvents !== val) {
-        console.log('[Card] scrollTop:', Math.round(sc.scrollTop), '→ pointer-events:', val)
-        wrapper.style.pointerEvents = val
-      }
+    if (!wrapper) return
+    const update = () => {
+      wrapper.style.pointerEvents = window.scrollY < window.innerHeight * 0.5 ? 'auto' : 'none'
     }
-    sc.addEventListener('scroll', onScroll, { passive: true })
-    onScroll() // apply correct initial value
-    console.log('[Card] scroll listener attached. initial PE:', wrapper.style.pointerEvents)
-    return () => sc.removeEventListener('scroll', onScroll)
-  }, []);
-
-  const forwardScroll = (e) => {
-    const sc = document.getElementById('scroll-container')
-    if (sc) sc.scrollTop += e.deltaY
-  }
+    window.addEventListener('scroll', update, { passive: true })
+    update()
+    return () => window.removeEventListener('scroll', update)
+  }, [])
 
   return (
-    <div
-      ref={wrapperRef}
-      className={styles['lanyard-wrapper']}
-      onWheel={forwardScroll}
-    >
+    <div ref={wrapperRef} className={styles['lanyard-wrapper']}>
       <Canvas
         camera={{ position: position, fov: fov }}
         dpr={[1, isMobile ? 1.5 : 3]}

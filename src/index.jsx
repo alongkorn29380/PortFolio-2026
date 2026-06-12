@@ -8,6 +8,7 @@ import Navebar from './Components/Navebar/Navebar'
 import Profile from './Components/Profile/Profile.jsx'
 import Card from './Components/Card/Card.jsx'
 import { SkillsSection } from './Components/Keyboard/Skillssection.jsx'
+import Portfolio from './Components/Portfolio/Portfolio.jsx'
 
 const root = ReactDOM.createRoot(document.querySelector('#root'))
 
@@ -21,22 +22,24 @@ root.render(
             <Card
                 position={[0, 0, 22]}
                 gravity={[0, -40, 0]}
-                frontImage="/Card/front.png"
-                backImage="/Card/back.png"
+                frontImage="/Images/Card/front.png"
+                backImage="/Images/Card/back.png"
                 imageFit="cover"
-                lanyardImage="/Card/band.png"
+                lanyardImage="/Images/Card/band.png"
                 lanyardWidth={1}
             />,
             document.body
         )}
 
-        {/* Scroll container — body is overflow:hidden so only this div scrolls */}
+        {/* Home + Skills scroll with the window; Portfolio is a sibling so the
+            fixed card overlay (z-index 10) never blocks it */}
         <div id="scroll-container">
             <section id="home">
                 <Profile />
             </section>
             <SkillsSection />
         </div>
+        <Portfolio />
 
         {/* Fixed grid background canvas */}
         <Canvas
