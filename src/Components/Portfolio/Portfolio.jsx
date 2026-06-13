@@ -9,7 +9,7 @@ const projects = [
     { id: 3, title: 'Christmas Card',          desc: 'การ์ดอวยพรวันคริสมาสและปีใหม่',                     img: '/Images/Project/Christmas.png',         details: '/project/christmas-card' },
     { id: 4, title: 'Arm Robotic',             desc: 'แขนหุ่นยนต์ช่วยหยิบจับตามความประสงค์ของผู้ใช้งาน',     img: '/Images/Project/Arm_Robotic.jpg',       details: '/project/arm-robotic' },
     { id: 5, title: 'Snow Globe',              desc: 'ลูกแก้วหิมะ Three.js',                           img: '/Images/Project/Snow_Globe.png',        details: '/project/snow-globe' },
-    { id: 6, title: 'Terrain Portfolio',       desc: 'Openworld Portfolio',                          img: '/Images/Project/Portfolio.png',        details: '/project/terrain-portfolio' },
+    { id: 6, title: 'Terrain Portfolio',       desc: 'Openworld Portfolio (Open in Computer)',                          img: '/Images/Project/Portfolio.png',        details: '/project/terrain-portfolio' },
 ]
 
 const certs = [

@@ -290,3 +290,12 @@
     .title { font-size: 34px; }
     .galleryStrip { padding: 10px 24px; }
 }
+
+@media (max-width: 480px) {
+    .topBar { padding: 12px 16px; gap: 10px; }
+    .breadcrumb { font-size: 11px; }
+    .content { padding: 12px 16px; gap: 20px; }
+    .title { font-size: 26px; }
+    .galleryStrip { padding: 8px 16px; }
+    .thumb { width: 80px; height: 52px; }
+}

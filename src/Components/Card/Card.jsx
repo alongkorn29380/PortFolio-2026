@@ -79,7 +79,7 @@ export default function Card({
   return (
     <div ref={wrapperRef} className={styles['lanyard-wrapper']}>
       <Canvas
-        camera={{ position: position, fov: fov }}
+        camera={{ position: position, fov: isMobile ? 30 : fov }}
         dpr={[1, isMobile ? 1.5 : 3]}
         gl={{ alpha: transparent }}
         onCreated={({ gl }) => gl.setClearColor(new THREE.Color(0x000000), transparent ? 0 : 2)}
@@ -259,7 +259,7 @@ function Band({
 
   return (
     <>
-      <group position={[4.6, 4, 0]}>
+      <group position={isMobile ? [0, 0, 0] : [0, 4, 0]}>
         <RigidBody ref={fixed} {...segmentProps} type="fixed" />
         <RigidBody position={[0.5, 0, 0]} ref={j1} {...segmentProps}>
           <BallCollider args={[0.1]} />

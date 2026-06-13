@@ -7,3 +7,19 @@
   height: 100vh;
   pointer-events: none;
 }
+
+/* On desktop the card floats on the right side.
+   Limit the interactive canvas to the right half so the
+   profile links on the left remain clickable. */
+@media (min-width: 769px) {
+  .lanyard-wrapper {
+    left: 30%;
+    width: 70%;
+  }
+}
+
+@media (max-width: 768px) {
+  .lanyard-wrapper {
+    display: none;
+  }
+}

@@ -29,6 +29,7 @@ function MainPage() {
         }
     }, [])
 
+
     return (
         <>
             <Navebar />
@@ -47,6 +48,9 @@ function MainPage() {
             <div id="scroll-container">
                 <section id="home">
                     <Profile />
+                    <div className="mobile-card-static">
+                        <img src="/Images/Card/front.png" alt="ID Card" />
+                    </div>
                 </section>
                 <SkillsSection />
             </div>

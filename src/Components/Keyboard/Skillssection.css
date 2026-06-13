@@ -21,8 +21,15 @@
   width: 100% !important;
   height: 100% !important;
   position: relative;
-  z-index: 1;             
+  z-index: 1;
   pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .skills-sticky canvas {
+    pointer-events: auto;
+    touch-action: pan-y;
+  }
 }
 
 
@@ -121,4 +128,47 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 500;
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .skills-track {
+    height: 250vh;
+  }
+  .skills-head {
+    top: 300px;
+    left: 10px;
+  }
+
+  .skills-head h2 {
+    font-size: 36px;
+  }
+
+  .skill-panel {
+    left: 16px;
+    right: 16px;
+    width: auto;
+    top: auto;
+    bottom: 28px;
+    transform: none;
+    border-radius: 16px;
+    border-left: 3px solid var(--cyan);
+  }
+
+  .skill-panel__name {
+    font-size: 32px;
+  }
+
+  .skill-panel__desc {
+    font-size: 14px;
+  }
+
+  .skill-panel__body {
+    padding: 24px 20px 20px;
+    gap: 14px;
+  }
+
+  .skill-panel__idle {
+    padding: 24px 20px;
+  }
 }

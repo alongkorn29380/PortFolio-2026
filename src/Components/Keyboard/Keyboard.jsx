@@ -17,7 +17,7 @@ KEY_PAIRS.forEach((p, i) => {
 
 const DEFAULT_HOVER_COLOR = new THREE.Color('#22d3ee')
 
-export function KeyboardModel({ progressRef, onHoverChange }) {
+export function KeyboardModel({ progressRef, onHoverChange, isMobile = false }) {
   const { scene } = useGLTF('/Models/keyboard.glb')
   const { raycaster, camera, gl } = useThree()
 
@@ -25,30 +25,62 @@ export function KeyboardModel({ progressRef, onHoverChange }) {
   const hoverRef   = useRef(null)
   const mouse      = useRef(new THREE.Vector2(-10, -10))
   const missFrames = useRef(0)
+  const locked     = useRef(false)
 
   useEffect(() => {
     const canvas = gl.domElement
 
-    const onMove = (e) => {
+    const updateMouse = (clientX, clientY) => {
       const rect = canvas.getBoundingClientRect()
       if (
-        e.clientX >= rect.left && e.clientX <= rect.right &&
-        e.clientY >= rect.top  && e.clientY <= rect.bottom
+        clientX >= rect.left && clientX <= rect.right &&
+        clientY >= rect.top  && clientY <= rect.bottom
       ) {
-        mouse.current.x =  ((e.clientX - rect.left) / rect.width)  * 2 - 1
-        mouse.current.y = -((e.clientY - rect.top)  / rect.height) * 2 + 1
+        mouse.current.x =  ((clientX - rect.left) / rect.width)  * 2 - 1
+        mouse.current.y = -((clientY - rect.top)  / rect.height) * 2 + 1
+      } else {
+        mouse.current.set(-10, -10)
+      }
+    }
+
+    const onMove = (e) => {
+      if (isMobile) return  // ignore move on mobile; only taps matter
+      updateMouse(e.clientX, e.clientY)
+    }
+
+    const onDown = (e) => {
+      if (!isMobile) return
+      if (locked.current) {
+        // Second tap anywhere → dismiss
+        locked.current = false
+        mouse.current.set(-10, -10)
+        return
+      }
+      const src = e.touches ? e.touches[0] : e
+      updateMouse(src.clientX, src.clientY)
+    }
+
+    const onUp = () => {
+      if (!isMobile || locked.current) return
+      // If a key was hit by this tap, lock it open
+      if (hoverRef.current !== null) {
+        locked.current = true
       } else {
         mouse.current.set(-10, -10)
       }
     }
 
     window.addEventListener('pointermove',  onMove)
-    window.addEventListener('pointerleave', () => mouse.current.set(-10, -10))
+    window.addEventListener('pointerdown',  onDown)
+    window.addEventListener('pointerup',    onUp)
+    window.addEventListener('pointerleave', () => { if (!isMobile) mouse.current.set(-10, -10) })
     return () => {
       window.removeEventListener('pointermove',  onMove)
-      window.removeEventListener('pointerleave', () => mouse.current.set(-10, -10))
+      window.removeEventListener('pointerdown',  onDown)
+      window.removeEventListener('pointerup',    onUp)
+      window.removeEventListener('pointerleave', () => { if (!isMobile) mouse.current.set(-10, -10) })
     }
-  }, [gl])
+  }, [gl, isMobile])
 
   useEffect(() => {
     onHoverChange?.(hover !== null ? KEY_PAIRS[hover] : null)
@@ -153,7 +185,7 @@ export function KeyboardModel({ progressRef, onHoverChange }) {
   useFrame(() => {
     const prog = progressRef.current ?? 0
 
-    board.position.x = lerp(-13, 0, easeOutCubic(clamp(prog / 0.18, 0, 1)))
+    board.position.x = lerp(isMobile ? -5 : -13, 0, easeOutCubic(clamp(prog / 0.18, 0, 1)))
 
     // Raycast hover detection 
     if (pairs.length > 0) {
@@ -214,7 +246,7 @@ export function KeyboardModel({ progressRef, onHoverChange }) {
   })
 
   return (
-    <group position={[3, 1, 1]} scale={2.5} rotation={[0.3, 1, 0]}>
+    <group position={isMobile ? [0, -5, 0] : [6, 1, 1]} scale={isMobile ? 1.8 : 2.5} rotation={[0.3, 1, 0]}>
       <primitive object={scene} />
     </group>
   )
