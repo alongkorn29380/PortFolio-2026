@@ -3,7 +3,8 @@
     "allow": [
       "Bash(Get-Content \"c:/Users/along/OneDrive/เดสก์ท็อป/portfolio_2026/src/index.jsx\")",
       "Read(//c/Users/along/OneDrive/**)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(git lfs *)"
     ]
   }
 }
