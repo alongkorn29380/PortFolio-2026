@@ -17,6 +17,9 @@
     margin-bottom: 48px;
     padding-bottom: 32px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.55s ease 0.15s, transform 0.55s ease 0.15s;
 }
 
 
@@ -35,7 +38,10 @@
     color: #fff;
     letter-spacing: -0.02em;
     line-height: 1;
-    margin: 0;
+    margin: 0 0 48px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 
@@ -79,19 +85,6 @@
     gap: 28px;
 }
 
-/* ─── Card slide-up animation on mount ─── */
-/* Start at opacity 0.5 (not 0) so cards are visible immediately during stagger delay */
-@keyframes cardSlideUp {
-    from {
-        opacity: 0.5;
-        transform: translateY(24px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
 .card {
     background: #0f0f14;
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -100,9 +93,13 @@
     display: flex;
     flex-direction: column;
     gap: 0;
-    animation: cardSlideUp 0.4s ease both;
-    animation-delay: calc(var(--i, 0) * 0.05s);
-    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+        opacity  0.55s ease calc(var(--i, 0) * 0.09s),
+        transform 0.55s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--i, 0) * 0.09s),
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
 }
 
 .card:hover {
@@ -290,6 +287,14 @@
 }
 
 /* ─── Responsive ─── */
+/* ── Triggered by IntersectionObserver ── */
+.inView .heading,
+.inView .header,
+.inView .card {
+    opacity: 1;
+    transform: none;
+}
+
 @media (max-width: 960px) {
     .header {
         flex-direction: column;

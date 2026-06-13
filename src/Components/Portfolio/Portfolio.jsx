@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import { Link } from 'react-router-dom'
 import styles from './Portfolio.module.css'
@@ -19,6 +19,7 @@ const certs = [
 export default function Portfolio() {
     const [activeTab, setActiveTab] = useState('project')
     const [lightboxImg, setLightboxImg] = useState(null)
+    const sectionRef = useRef(null)
 
     useEffect(() => {
         if (!lightboxImg) return
@@ -27,8 +28,19 @@ export default function Portfolio() {
         return () => window.removeEventListener('keydown', onKey)
     }, [lightboxImg])
 
+    useEffect(() => {
+        const el = sectionRef.current
+        if (!el) return
+        const observer = new IntersectionObserver(
+            ([entry]) => { if (entry.isIntersecting) { el.classList.add(styles.inView); observer.disconnect() } },
+            { threshold: 0.06 }
+        )
+        observer.observe(el)
+        return () => observer.disconnect()
+    }, [])
+
     return (
-        <section id="portfolio" className={styles.section}>
+        <section id="portfolio" className={styles.section} ref={sectionRef}>
 
             <h2 className={styles.heading}>Portfolio Showcase</h2>
 

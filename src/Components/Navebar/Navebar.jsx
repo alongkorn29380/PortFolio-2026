@@ -24,7 +24,7 @@ function Navebar() {
                     <li><a href="#contact">Contact</a></li>
                 </ul>
                 <div className={styles.button}>
-                    <a href="#">Hire Me</a>
+                    <a href="/Resume/Resuma.pdf" target="_blank" rel="noopener noreferrer">Resume</a>
                 </div>
             </div>
 
@@ -39,7 +39,7 @@ function Navebar() {
                         <li><a href="#contact">Contact</a></li>
                     </ul>
                     <div className={styles.mobile_button}>
-                        <a href='#'>Hire Me</a>
+                        <a href='/Resume/Resuma.pdf' target="_blank" rel="noopener noreferrer">Resume</a>
                     </div>
                 </>
             ) : null}

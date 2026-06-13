@@ -39,6 +39,8 @@ export function SkillsSection() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  const accentColor = activeSkill?.hoverColor ?? '#22d3ee'
+
   return (
     <section className="skills-track" id="skills" ref={trackRef}>
       <div className="skills-sticky">
@@ -46,25 +48,31 @@ export function SkillsSection() {
           <h2>Skills</h2>
         </div>
 
-        {/* Info panel in the left empty space */}
-        <div className="skill-panel">
+        <div
+          className={`skill-panel${activeSkill ? ' skill-panel--active' : ''}`}
+          style={{ '--accent': accentColor }}
+        >
           {activeSkill ? (
-            <div className="skill-panel__body">
-              <img
-                className="skill-panel__icon"
-                src={activeSkill.logo}
-                alt={activeSkill.label}
-              />
-              <h3
-                className="skill-panel__name"
-                style={{ color: activeSkill.hoverColor }}
-              >
+            /* key forces remount on every skill change → animations replay */
+            <div className="skill-panel__body" key={activeSkill.label}>
+              <div className="skill-panel__icon-wrap">
+                <img
+                  className="skill-panel__icon"
+                  src={activeSkill.logo}
+                  alt={activeSkill.label}
+                />
+              </div>
+              <h3 className="skill-panel__name" style={{ color: activeSkill.hoverColor }}>
                 {activeSkill.label}
               </h3>
               <p className="skill-panel__desc">{activeSkill.desc}</p>
             </div>
           ) : (
-            <span className="skill-panel__idle">{isMobile ? 'tap a key —' : 'hover a key —'}</span>
+            <div className="skill-panel__idle">
+              <span className="skill-panel__idle-hint">
+                {isMobile ? '↑  tap a key' : '→  hover a key'}
+              </span>
+            </div>
           )}
         </div>
 
@@ -90,7 +98,6 @@ export function SkillsSection() {
             <Environment preset="city" environmentIntensity={0.6} />
           </Suspense>
         </Canvas>
-
       </div>
     </section>
   )
