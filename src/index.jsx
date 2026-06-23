@@ -18,6 +18,7 @@ import ChristmasCardPage   from './Components/Project/ChristmasCard.jsx'
 import ArmRoboticPage       from './Components/Project/ArmRobotic.jsx'
 import SnowGlobePage        from './Components/Project/SnowGlobe.jsx'
 import TerrainPortfolioPage from './Components/Project/TerrainPortfolio.jsx'
+import EcomPange from './Components/Project/Ecom.jsx'
 
 function MainPage() {
     useEffect(() => {
@@ -79,6 +80,7 @@ root.render(
             <Route path="/project/arm-robotic"       element={<ArmRoboticPage />} />
             <Route path="/project/snow-globe"         element={<SnowGlobePage />} />
             <Route path="/project/terrain-portfolio"  element={<TerrainPortfolioPage />} />
+            <Route path="/project/ecommerce-3d"       element={<EcomPange />} />
         </Routes>
     </BrowserRouter>
 )

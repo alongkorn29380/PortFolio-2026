@@ -10,6 +10,7 @@ const projects = [
     { id: 4, title: 'Arm Robotic',             desc: 'แขนหุ่นยนต์ช่วยหยิบจับตามความประสงค์ของผู้ใช้งาน',     img: '/Images/Project/Arm_Robotic.jpg',       details: '/project/arm-robotic' },
     { id: 5, title: 'Snow Globe',              desc: 'ลูกแก้วหิมะ Three.js',                           img: '/Images/Project/Snow_Globe.png',        details: '/project/snow-globe' },
     { id: 6, title: 'Terrain Portfolio',       desc: 'Openworld Portfolio (Open in Computer)',                          img: '/Images/Project/Portfolio.png',        details: '/project/terrain-portfolio' },
+    { id: 7, title: 'Ecommerce 3D',            desc: 'เว็บไซต์ร้านค้าออนไลน์ 3 มิติ',                       img: '/Images/Project/Ecom.png',             details: '/project/ecommerce-3d' },
 ]
 
 const certs = [
